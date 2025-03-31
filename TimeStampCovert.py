@@ -1,7 +1,7 @@
 import sys
 import time
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 
 def timestamp_to_datetime(timestamp):
     """
@@ -32,7 +32,7 @@ class TimeStampConverter(QWidget):
         self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
 
         # Create layout
-        layout = QVBoxLayout()
+        layout = QGridLayout()
 
         # Input prompt label
         self.label = QLabel("Enter UTC timestamp:")
@@ -40,16 +40,25 @@ class TimeStampConverter(QWidget):
 
         # Input field
         self.input_field = QLineEdit(self)
-        layout.addWidget(self.input_field)
+        layout.addWidget(self.input_field, 0, 1)
+        self.input_field.setPlaceholderText("Enter timestamp here")
+
+        # Set current UTC timestamp as default input
+        current_utc_timestamp = str(int(time.time()))
+        self.input_field.setText(current_utc_timestamp)
+
+        # Output result label
+        self.result_label = QLabel("Conversion result:")
+        layout.addWidget(self.result_label, 1, 0)
+
+        self.result_print = QLabel("", self)
+        layout.addWidget(self.result_print, 1, 1)
 
         # Convert button
         self.convert_button = QPushButton("Convert", self)
         self.convert_button.clicked.connect(self.convert_timestamp)
-        layout.addWidget(self.convert_button)
-
-        # Output result label
-        self.result_label = QLabel("Conversion result:")
-        layout.addWidget(self.result_label)
+        layout.addWidget(self.convert_button, 2, 0, 1, 2)
+        self.convert_button.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
 
         # Set layout
         self.setLayout(layout)
@@ -59,7 +68,7 @@ class TimeStampConverter(QWidget):
         try:
             timestamp = float(user_input)
             result = timestamp_to_datetime(timestamp)
-            self.result_label.setText(f"Conversion result: {result}")
+            self.result_print.setText(f"{result}")
         except ValueError:
             QMessageBox.warning(self, "Error", "Please enter a valid numeric timestamp!")
 
