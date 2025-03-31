@@ -1,5 +1,6 @@
 import sys
 import time
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 
 def timestamp_to_datetime(timestamp):
@@ -26,6 +27,9 @@ class TimeStampConverter(QWidget):
     def init_ui(self):
         self.setWindowTitle("Timestamp Converter")
         self.setGeometry(100, 100, 400, 200)
+
+        # Ensure the window stays on top
+        self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
 
         # Create layout
         layout = QVBoxLayout()
