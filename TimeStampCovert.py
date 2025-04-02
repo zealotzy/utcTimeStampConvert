@@ -60,7 +60,7 @@ class TimeStampConverter(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Timestamp Converter")
-        self.geometry("500x300")  # Adjusted size to fit all components
+        self.geometry("350x300")  # Adjusted size to fit all components
         self.resizable(False, False)  # Fix the window size
         self.attributes("-topmost", True)  # Ensure the window stays on top
         self.init_ui()
@@ -83,16 +83,18 @@ class TimeStampConverter(tk.Tk):
         self.result_print_timestamp.grid(row=1, column=1, padx=10, pady=10, sticky="w")
 
         # Convert button for timestamp to datetime
-        convert_button1 = tk.Button(self, text="Convert to Datetime", command=self.convert_timestamp, bg="#4CAF50", fg="white")
+        button_style = {"width": 20, "height": 1, "bg": "#4CAF50", "fg": "white"}  # Unified button style
+
+        convert_button1 = tk.Button(self, text="Convert to Datetime", command=self.convert_timestamp, **button_style)
         convert_button1.grid(row=2, column=1, columnspan=2, pady=10, sticky="we")
 
         # Input prompt label for datetime to timestamp
-        label2 = tk.Label(self, text="Datetime:")
-        label2.grid(row=3, column=0, padx=10, pady=10, sticky="w")
+        self.datetime_button = tk.Button(self, text="Select DateTime", command=self.open_datetime_picker, width=5, height=1, bg="#4CAF50", fg="white")
+        self.datetime_button.grid(row=3, column=0, padx=10, pady=10, sticky="we")
 
-        # Button to open DateTimePickerDialog
-        self.datetime_button = tk.Button(self, text="Select DateTime", command=self.open_datetime_picker, bg="#FFC107", fg="black")
-        self.datetime_button.grid(row=3, column=1, padx=10, pady=10, sticky="we")
+        # Label to display selected datetime
+        self.selected_datetime_label = tk.Label(self, text="", fg="blue")
+        self.selected_datetime_label.grid(row=3, column=1, padx=10, pady=10, sticky="w")
 
         # Output result label for datetime to timestamp
         result_label2 = tk.Label(self, text="Conversion result:")
@@ -102,14 +104,15 @@ class TimeStampConverter(tk.Tk):
         self.result_print_datetime.grid(row=4, column=1, padx=10, pady=10, sticky="w")
 
         # Convert button for datetime to timestamp
-        convert_button2 = tk.Button(self, text="Convert to Timestamp", command=self.convert_datetime, bg="#2196F3", fg="white")
+        convert_button2 = tk.Button(self, text="Convert to Timestamp", command=self.convert_datetime, **button_style)
         convert_button2.grid(row=5, column=1, columnspan=2, pady=10, sticky="we")
 
     def open_datetime_picker(self):
         dialog = DateTimePickerDialog(self)
         if dialog.selected_date and dialog.selected_time:
             self.selected_datetime = f"{dialog.selected_date} {dialog.selected_time}"
-            messagebox.showinfo("Selected Datetime", f"Selected: {self.selected_datetime}")
+            self.selected_datetime_label.config(text=self.selected_datetime)  # Display selected datetime
+            # messagebox.showinfo("Selected Datetime", f"Selected: {self.selected_datetime}")
 
     def convert_timestamp(self):
         user_input = self.input_field_timestamp.get()
