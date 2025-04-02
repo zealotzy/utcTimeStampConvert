@@ -23,17 +23,18 @@ class TimeStampConverter(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Timestamp Converter")
-        self.geometry("400x200")
+        self.geometry("350x150")
+        self.resizable(False, False)  # Fix the window size
         self.attributes("-topmost", True)  # Ensure the window stays on top
         self.init_ui()
 
     def init_ui(self):
         # Input prompt label
-        label = tk.Label(self, text="Enter UTC timestamp:")
+        label = tk.Label(self, text="UTC timestamp:")
         label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
         # Input field
-        self.input_field = tk.Entry(self, width=30)
+        self.input_field = tk.Entry(self, width=25)
         self.input_field.grid(row=0, column=1, padx=10, pady=10)
         self.input_field.insert(0, str(int(time.time())))  # Set current UTC timestamp as default input
 
@@ -46,7 +47,7 @@ class TimeStampConverter(tk.Tk):
 
         # Convert button
         convert_button = tk.Button(self, text="Convert", command=self.convert_timestamp, bg="#4CAF50", fg="white")
-        convert_button.grid(row=2, column=0, columnspan=2, pady=20)
+        convert_button.grid(row=2, column=1, columnspan=2, pady=20, sticky="we")  # Stretch button to fill width
 
     def convert_timestamp(self):
         user_input = self.input_field.get()
