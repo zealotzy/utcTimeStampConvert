@@ -1,7 +1,7 @@
-import sys
 import time
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QMessageBox
+import tkinter as tk
+from tkinter import messagebox
+
 
 def timestamp_to_datetime(timestamp):
     """
@@ -19,62 +19,45 @@ def timestamp_to_datetime(timestamp):
         return f"Conversion failed: {e}"
 
 
-class TimeStampConverter(QWidget):
+class TimeStampConverter(tk.Tk):
     def __init__(self):
         super().__init__()
+        self.title("Timestamp Converter")
+        self.geometry("400x200")
+        self.attributes("-topmost", True)  # Ensure the window stays on top
         self.init_ui()
 
     def init_ui(self):
-        self.setWindowTitle("Timestamp Converter")
-        self.setGeometry(100, 100, 400, 200)
-
-        # Ensure the window stays on top
-        self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
-
-        # Create layout
-        layout = QGridLayout()
-
         # Input prompt label
-        self.label = QLabel("Enter UTC timestamp:")
-        layout.addWidget(self.label)
+        label = tk.Label(self, text="Enter UTC timestamp:")
+        label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
         # Input field
-        self.input_field = QLineEdit(self)
-        layout.addWidget(self.input_field, 0, 1)
-        self.input_field.setPlaceholderText("Enter timestamp here")
-
-        # Set current UTC timestamp as default input
-        current_utc_timestamp = str(int(time.time()))
-        self.input_field.setText(current_utc_timestamp)
+        self.input_field = tk.Entry(self, width=30)
+        self.input_field.grid(row=0, column=1, padx=10, pady=10)
+        self.input_field.insert(0, str(int(time.time())))  # Set current UTC timestamp as default input
 
         # Output result label
-        self.result_label = QLabel("Conversion result:")
-        layout.addWidget(self.result_label, 1, 0)
+        result_label = tk.Label(self, text="Conversion result:")
+        result_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
-        self.result_print = QLabel("", self)
-        layout.addWidget(self.result_print, 1, 1)
+        self.result_print = tk.Label(self, text="", fg="blue")
+        self.result_print.grid(row=1, column=1, padx=10, pady=10, sticky="w")
 
         # Convert button
-        self.convert_button = QPushButton("Convert", self)
-        self.convert_button.clicked.connect(self.convert_timestamp)
-        layout.addWidget(self.convert_button, 2, 0, 1, 2)
-        self.convert_button.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
-
-        # Set layout
-        self.setLayout(layout)
+        convert_button = tk.Button(self, text="Convert", command=self.convert_timestamp, bg="#4CAF50", fg="white")
+        convert_button.grid(row=2, column=0, columnspan=2, pady=20)
 
     def convert_timestamp(self):
-        user_input = self.input_field.text()
+        user_input = self.input_field.get()
         try:
             timestamp = float(user_input)
             result = timestamp_to_datetime(timestamp)
-            self.result_print.setText(f"{result}")
+            self.result_print.config(text=result)
         except ValueError:
-            QMessageBox.warning(self, "Error", "Please enter a valid numeric timestamp!")
+            messagebox.showwarning("Error", "Please enter a valid numeric timestamp!")
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    converter = TimeStampConverter()
-    converter.show()
-    sys.exit(app.exec_())
+    app = TimeStampConverter()
+    app.mainloop()
